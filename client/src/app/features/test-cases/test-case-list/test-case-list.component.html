@@ -1,94 +1,56 @@
-<div class="page-enter space-y-6">
+<div class="space-y-6 animate-fade-in-up">
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <div>
-      <h1 class="text-2xl font-bold text-dark-800">Test Cases</h1>
-      <p class="text-sm text-dark-500 mt-1">Manage and track your QA test cases</p>
-    </div>
-    <a *ngIf="authService.hasRole(['admin', 'qa_engineer'])" 
-       routerLink="/test-cases/new" class="btn-primary flex items-center gap-2 self-start">
-      ➕ New Test Case
+    <div><h1 class="text-2xl font-bold text-slate-900">Test Cases</h1><p class="text-sm text-slate-500 mt-1">Manage and track your QA test cases</p></div>
+    <a *ngIf="authService.hasRole(['admin', 'qa_engineer'])" routerLink="/test-cases/new"
+       class="btn-primary flex items-center gap-2 self-start">
+      <svg class="icon-sm" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+      New Test Case
     </a>
   </div>
 
   <!-- Filters -->
-  <div class="card">
+  <div class="card-glass">
     <div class="flex flex-col lg:flex-row gap-3">
-      <!-- Search -->
-      <div class="flex-1">
-        <div class="relative">
-          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400">🔍</span>
-          <input type="text" [(ngModel)]="filters.search" (keyup.enter)="applyFilters()"
-                 placeholder="Search by ID, title, or description..."
-                 class="input-field pl-10">
-        </div>
+      <div class="flex-1 relative group">
+        <svg class="icon-sm absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+        <input type="text" [(ngModel)]="filters.search" (keyup.enter)="applyFilters()" placeholder="Search by ID, title, or description..." class="input-field pl-11">
       </div>
-      
-      <!-- Status Filter -->
-      <select [(ngModel)]="filters.status" (change)="applyFilters()" class="select-field w-full lg:w-40">
-        <option value="">All Status</option>
-        <option value="Active">Active</option>
-        <option value="Draft">Draft</option>
-        <option value="Deprecated">Deprecated</option>
-        <option value="Under Review">Under Review</option>
-      </select>
-
-      <!-- Priority Filter -->
-      <select [(ngModel)]="filters.priority" (change)="applyFilters()" class="select-field w-full lg:w-40">
-        <option value="">All Priority</option>
-        <option value="Critical">Critical</option>
-        <option value="High">High</option>
-        <option value="Medium">Medium</option>
-        <option value="Low">Low</option>
-      </select>
-
-      <!-- Type Filter -->
-      <select [(ngModel)]="filters.type" (change)="applyFilters()" class="select-field w-full lg:w-40">
-        <option value="">All Types</option>
-        <option value="Manual">Manual</option>
-        <option value="Automated">Automated</option>
-        <option value="Performance">Performance</option>
-        <option value="Security">Security</option>
-      </select>
-
-      <button (click)="clearFilters()" class="btn-ghost text-sm whitespace-nowrap">✕ Clear</button>
+      <select [(ngModel)]="filters.status" (change)="applyFilters()" class="select-field w-full lg:w-40"><option value="">All Status</option><option value="Active">Active</option><option value="Draft">Draft</option><option value="Deprecated">Deprecated</option><option value="Under Review">Under Review</option></select>
+      <select [(ngModel)]="filters.priority" (change)="applyFilters()" class="select-field w-full lg:w-40"><option value="">All Priority</option><option value="Critical">Critical</option><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option></select>
+      <select [(ngModel)]="filters.type" (change)="applyFilters()" class="select-field w-full lg:w-40"><option value="">All Types</option><option value="Manual">Manual</option><option value="Automated">Automated</option><option value="Performance">Performance</option><option value="Security">Security</option></select>
+      <button (click)="clearFilters()" class="btn-icon" title="Clear filters">
+        <svg class="icon" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
     </div>
   </div>
 
   <!-- Loading -->
-  <div *ngIf="isLoading" class="space-y-3">
-    <div *ngFor="let i of [1,2,3,4,5]" class="card flex items-center gap-4">
-      <div class="skeleton w-20 h-5"></div>
-      <div class="flex-1 space-y-2">
-        <div class="skeleton h-4 w-3/4"></div>
-        <div class="skeleton h-3 w-1/2"></div>
-      </div>
-      <div class="skeleton w-16 h-6 rounded-full"></div>
-    </div>
+  <div *ngIf="isLoading" class="space-y-3 stagger">
+    <div *ngFor="let i of [1,2,3,4,5]" class="card flex items-center gap-4"><div class="skeleton w-10 h-10 rounded-xl"></div><div class="flex-1 space-y-2"><div class="skeleton h-4 w-3/4"></div><div class="skeleton h-3 w-1/2"></div></div><div class="skeleton w-16 h-6 rounded-full"></div></div>
   </div>
 
-  <!-- Empty State -->
+  <!-- Empty -->
   <div *ngIf="!isLoading && testCases.length === 0" class="card text-center py-16">
-    <p class="text-5xl mb-4">🧪</p>
-    <h3 class="text-lg font-semibold text-dark-700 mb-2">No test cases found</h3>
-    <p class="text-sm text-dark-400 mb-6">Create your first test case to get started</p>
-    <a *ngIf="authService.hasRole(['admin', 'qa_engineer'])" 
-       routerLink="/test-cases/new" class="btn-primary inline-flex items-center gap-2">
-      ➕ Create Test Case
+    <svg class="icon-xl mx-auto mb-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0"/></svg>
+    <h3 class="text-lg font-semibold text-slate-700 mb-2">No test cases found</h3>
+    <p class="text-sm text-slate-400 mb-6">Create your first test case to get started</p>
+    <a *ngIf="authService.hasRole(['admin', 'qa_engineer'])" routerLink="/test-cases/new" class="btn-primary inline-flex items-center gap-2">
+      <svg class="icon-sm" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+      Create Test Case
     </a>
   </div>
 
   <!-- Test Case Cards -->
-  <div *ngIf="!isLoading && testCases.length > 0" class="space-y-3">
-    <div *ngFor="let tc of testCases; let i = index" 
-         class="card-hover cursor-pointer group"
-         [routerLink]="['/test-cases', tc._id]"
-         [style.animation-delay]="i * 50 + 'ms'">
+  <div *ngIf="!isLoading && testCases.length > 0" class="space-y-3 stagger">
+    <div *ngFor="let tc of testCases" class="card-3d cursor-pointer group" [routerLink]="['/test-cases', tc._id]">
       <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-        <!-- Left: ID & Type Icon -->
         <div class="flex items-center gap-3 min-w-0">
-          <div class="w-10 h-10 rounded-xl bg-dark-50 flex items-center justify-center text-lg flex-shrink-0 group-hover:scale-110 transition-transform">
-            {{ getTypeIcon(tc.type) }}
+          <div class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+            <svg *ngIf="tc.type==='Manual'" class="icon text-blue-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672z"/></svg>
+            <svg *ngIf="tc.type==='Automated'" class="icon text-violet-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58"/></svg>
+            <svg *ngIf="tc.type==='Performance'" class="icon text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+            <svg *ngIf="tc.type==='Security'" class="icon text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
           </div>
           <div class="min-w-0">
             <div class="flex items-center gap-2 flex-wrap">
@@ -96,40 +58,22 @@
               <span class="badge" [ngClass]="getPriorityColor(tc.priority)">{{ tc.priority }}</span>
               <span class="badge" [ngClass]="getStatusColor(tc.status)">{{ tc.status }}</span>
             </div>
-            <h3 class="text-sm font-medium text-dark-800 mt-1 truncate">{{ tc.title }}</h3>
+            <h3 class="text-sm font-medium text-slate-800 mt-1 truncate">{{ tc.title }}</h3>
           </div>
         </div>
-
-        <!-- Right: Metrics & Actions -->
-        <div class="flex items-center gap-4 sm:ml-auto flex-shrink-0">
-          <!-- Pass Rate -->
-          <div class="text-center hidden md:block">
-            <p class="text-xs text-dark-400">Pass Rate</p>
-            <p class="text-sm font-bold" [ngClass]="tc.passRate >= 80 ? 'text-emerald-600' : tc.passRate >= 50 ? 'text-amber-600' : 'text-red-600'">
-              {{ tc.passRate | number:'1.0-0' }}%
-            </p>
+        <div class="flex items-center gap-5 sm:ml-auto flex-shrink-0">
+          <div class="hidden md:flex items-center gap-2 min-w-[100px]">
+            <div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full transition-all duration-500" [style.width.%]="tc.passRate"></div></div>
+            <span class="text-xs font-semibold" [ngClass]="tc.passRate >= 80 ? 'text-emerald-600' : tc.passRate >= 50 ? 'text-amber-600' : 'text-red-600'">{{ tc.passRate | number:'1.0-0' }}%</span>
           </div>
-
-          <!-- Defects -->
-          <div class="text-center hidden md:block">
-            <p class="text-xs text-dark-400">Defects</p>
-            <p class="text-sm font-bold text-dark-700">{{ tc.defectCount }}</p>
-          </div>
-
-          <!-- Created By -->
-          <div class="text-center hidden lg:block">
-            <p class="text-xs text-dark-400">Created By</p>
-            <p class="text-sm text-dark-600 truncate max-w-[100px]">{{ tc.createdBy }}</p>
-          </div>
-
-          <!-- Actions -->
+          <div class="text-center hidden lg:block"><p class="text-xs text-slate-400">Defects</p><p class="text-sm font-bold text-slate-700">{{ tc.defectCount }}</p></div>
           <div class="flex items-center gap-1" *ngIf="authService.hasRole(['admin', 'qa_engineer'])">
-            <a [routerLink]="['/test-cases', tc._id, 'edit']" 
-               (click)="$event.stopPropagation()"
-               class="btn-icon text-sm" title="Edit">✏️</a>
-            <button *ngIf="authService.hasRole(['admin'])" 
-                    (click)="deleteTestCase(tc._id!, $event)"
-                    class="btn-icon text-sm hover:text-red-500" title="Delete">🗑️</button>
+            <a [routerLink]="['/test-cases', tc._id, 'edit']" (click)="$event.stopPropagation()" class="btn-icon text-sm" title="Edit">
+              <svg class="icon-sm" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>
+            </a>
+            <button *ngIf="authService.hasRole(['admin'])" (click)="deleteTestCase(tc._id!, $event)" class="btn-icon text-sm hover:text-red-500" title="Delete">
+              <svg class="icon-sm" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+            </button>
           </div>
         </div>
       </div>
@@ -138,19 +82,15 @@
 
   <!-- Pagination -->
   <div *ngIf="pagination && pagination.totalPages > 1" class="flex items-center justify-between">
-    <p class="text-xs text-dark-400">
-      Showing {{ (currentPage - 1) * limit + 1 }} - {{ (currentPage - 1) * limit + testCases.length }} of {{ pagination.totalPages * limit }}
-    </p>
+    <p class="text-xs text-slate-400">Page {{ currentPage }} of {{ pagination.totalPages }}</p>
     <div class="flex items-center gap-1">
-      <button (click)="changePage(currentPage - 1)" [disabled]="!pagination.hasPrev"
-              class="btn-icon disabled:opacity-30">◀</button>
-      <button *ngFor="let p of getPages()" (click)="changePage(p)"
-              class="w-9 h-9 rounded-xl text-sm font-medium transition-all duration-200"
-              [ngClass]="p === currentPage ? 'bg-primary-600 text-white shadow-sm' : 'text-dark-600 hover:bg-dark-100'">
-        {{ p }}
+      <button (click)="changePage(currentPage - 1)" [disabled]="!pagination.hasPrev" class="btn-icon disabled:opacity-30">
+        <svg class="icon-sm" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
       </button>
-      <button (click)="changePage(currentPage + 1)" [disabled]="!pagination.hasNext"
-              class="btn-icon disabled:opacity-30">▶</button>
+      <button *ngFor="let p of getPages()" (click)="changePage(p)" class="w-9 h-9 rounded-xl text-sm font-medium transition-all duration-200" [ngClass]="p === currentPage ? 'bg-primary-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'">{{ p }}</button>
+      <button (click)="changePage(currentPage + 1)" [disabled]="!pagination.hasNext" class="btn-icon disabled:opacity-30">
+        <svg class="icon-sm" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+      </button>
     </div>
   </div>
 </div>

@@ -1,142 +1,63 @@
-<div class="page-enter space-y-6">
-  <!-- Header -->
+<div class="space-y-6 animate-fade-in-up">
   <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl font-bold text-dark-800">{{ isEditing ? 'Edit Test Case' : 'New Test Case' }}</h1>
-      <p class="text-sm text-dark-500 mt-1">{{ isEditing ? 'Update test case details' : 'Create a new QA test case' }}</p>
-    </div>
-    <button (click)="router.navigate(['/test-cases'])" class="btn-ghost">← Back</button>
+    <div><h1 class="text-2xl font-bold text-slate-900">{{ isEditing ? 'Edit Test Case' : 'New Test Case' }}</h1><p class="text-sm text-slate-500 mt-1">{{ isEditing ? 'Update test case details' : 'Create a new QA test case' }}</p></div>
+    <button (click)="router.navigate(['/test-cases'])" class="btn-ghost flex items-center gap-2">
+      <svg class="icon-sm" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg> Back
+    </button>
   </div>
-
-  <!-- Loading -->
-  <div *ngIf="isLoading" class="card space-y-4">
-    <div class="skeleton h-8 w-48"></div>
-    <div class="skeleton h-10 w-full"></div>
-    <div class="skeleton h-10 w-full"></div>
-    <div class="skeleton h-20 w-full"></div>
-  </div>
-
-  <!-- Form -->
+  <div *ngIf="isLoading" class="card space-y-4"><div class="skeleton h-8 w-48"></div><div class="skeleton h-10 w-full"></div><div class="skeleton h-10 w-full"></div><div class="skeleton h-20 w-full"></div></div>
   <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
-    <!-- Basic Info -->
-    <div class="card">
-      <h3 class="text-sm font-semibold text-dark-700 mb-4">📋 Basic Information</h3>
+    <div class="card-3d">
+      <h3 class="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2"><svg class="icon text-primary-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg> Basic Information</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="input-label">Test ID *</label>
-          <input type="text" formControlName="testId" class="input-field font-mono" 
-                 placeholder="TC-AUTH-001" [attr.readonly]="isEditing ? true : null">
-          <div *ngIf="form.get('testId')?.invalid && form.get('testId')?.touched" class="input-error">Required</div>
-        </div>
-        <div>
-          <label class="input-label">Created By *</label>
-          <input type="text" formControlName="createdBy" class="input-field" placeholder="Your name">
-        </div>
+        <div><label class="input-label">Test ID *</label><input type="text" formControlName="testId" class="input-field font-mono" placeholder="TC-AUTH-001" [attr.readonly]="isEditing ? true : null"><div *ngIf="form.get('testId')?.invalid && form.get('testId')?.touched" class="input-error">Required</div></div>
+        <div><label class="input-label">Created By *</label><input type="text" formControlName="createdBy" class="input-field" placeholder="Your name"></div>
       </div>
-
-      <div class="mt-4">
-        <label class="input-label">Title *</label>
-        <input type="text" formControlName="title" class="input-field" placeholder="Verify login functionality">
-        <div *ngIf="form.get('title')?.invalid && form.get('title')?.touched" class="input-error">Required (max 100 chars)</div>
-      </div>
-
-      <div class="mt-4">
-        <label class="input-label">Description *</label>
-        <textarea formControlName="description" rows="3" class="input-field" placeholder="Detailed description of the test case..."></textarea>
-        <div *ngIf="form.get('description')?.invalid && form.get('description')?.touched" class="input-error">Required</div>
-      </div>
+      <div class="mt-4"><label class="input-label">Title *</label><input type="text" formControlName="title" class="input-field" placeholder="Verify login functionality"><div *ngIf="form.get('title')?.invalid && form.get('title')?.touched" class="input-error">Required (max 100 chars)</div></div>
+      <div class="mt-4"><label class="input-label">Description *</label><textarea formControlName="description" rows="3" class="input-field" placeholder="Detailed description of the test case..."></textarea><div *ngIf="form.get('description')?.invalid && form.get('description')?.touched" class="input-error">Required</div></div>
     </div>
-
-    <!-- Classification -->
-    <div class="card">
-      <h3 class="text-sm font-semibold text-dark-700 mb-4">🏷️ Classification</h3>
+    <div class="card-3d">
+      <h3 class="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2"><svg class="icon text-accent-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/></svg> Classification</h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div>
-          <label class="input-label">Type</label>
-          <select formControlName="type" class="select-field">
-            <option *ngFor="let t of types" [value]="t">{{ t }}</option>
-          </select>
-        </div>
-        <div>
-          <label class="input-label">Priority</label>
-          <select formControlName="priority" class="select-field">
-            <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
-          </select>
-        </div>
-        <div>
-          <label class="input-label">Status</label>
-          <select formControlName="status" class="select-field">
-            <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
-          </select>
-        </div>
-        <div>
-          <label class="input-label">Assigned To</label>
-          <input type="text" formControlName="assignedTo" class="input-field" placeholder="Assignee name">
-        </div>
+        <div><label class="input-label">Type</label><select formControlName="type" class="select-field"><option *ngFor="let t of types" [value]="t">{{ t }}</option></select></div>
+        <div><label class="input-label">Priority</label><select formControlName="priority" class="select-field"><option *ngFor="let p of priorities" [value]="p">{{ p }}</option></select></div>
+        <div><label class="input-label">Status</label><select formControlName="status" class="select-field"><option *ngFor="let s of statuses" [value]="s">{{ s }}</option></select></div>
+        <div><label class="input-label">Assigned To</label><input type="text" formControlName="assignedTo" class="input-field" placeholder="Assignee name"></div>
       </div>
-
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-        <div>
-          <label class="input-label">Est. Time (min)</label>
-          <input type="number" formControlName="estimatedTime" class="input-field" placeholder="15">
-        </div>
-        <div>
-          <label class="input-label">Defect Count</label>
-          <input type="number" formControlName="defectCount" class="input-field" placeholder="0">
-        </div>
-        <div>
-          <label class="input-label">Tags (comma separated)</label>
-          <input type="text" formControlName="tags" class="input-field" placeholder="auth, login, smoke-test">
-        </div>
+        <div><label class="input-label">Est. Time (min)</label><input type="number" formControlName="estimatedTime" class="input-field" placeholder="15"></div>
+        <div><label class="input-label">Defect Count</label><input type="number" formControlName="defectCount" class="input-field" placeholder="0"></div>
+        <div><label class="input-label">Tags (comma separated)</label><input type="text" formControlName="tags" class="input-field" placeholder="auth, login, smoke-test"></div>
       </div>
     </div>
-
-    <!-- Test Steps -->
-    <div class="card">
+    <div class="card-3d">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-sm font-semibold text-dark-700">📝 Test Steps</h3>
-        <button type="button" (click)="addStep()" class="btn-secondary text-xs">
-          ➕ Add Step
+        <h3 class="text-sm font-semibold text-slate-700 flex items-center gap-2"><svg class="icon text-secondary-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg> Test Steps</h3>
+        <button type="button" (click)="addStep()" class="btn-secondary text-xs flex items-center gap-1">
+          <svg class="icon-sm" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg> Add Step
         </button>
       </div>
-
       <div formArrayName="steps" class="space-y-3">
-        <div *ngFor="let step of steps.controls; let i = index" [formGroupName]="i"
-             class="flex gap-3 items-start p-4 bg-dark-50 rounded-xl animate-slide-up">
-          <div class="w-8 h-8 bg-primary-100 text-primary-700 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">
-            {{ i + 1 }}
-          </div>
+        <div *ngFor="let step of steps.controls; let i = index" [formGroupName]="i" class="flex gap-3 items-start p-4 bg-slate-50 rounded-xl border border-slate-100 animate-fade-in-up">
+          <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-secondary-500 text-white rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1 shadow-sm">{{ i + 1 }}</div>
           <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div>
-              <input type="text" formControlName="action" class="input-field text-sm" placeholder="Action to perform">
-            </div>
-            <div>
-              <input type="text" formControlName="expectedResult" class="input-field text-sm" placeholder="Expected result">
-            </div>
+            <input type="text" formControlName="action" class="input-field text-sm" placeholder="Action to perform">
+            <input type="text" formControlName="expectedResult" class="input-field text-sm" placeholder="Expected result">
           </div>
-          <button type="button" *ngIf="steps.length > 1" (click)="removeStep(i)" 
-                  class="btn-icon text-red-400 hover:text-red-600 mt-1">✕</button>
+          <button type="button" *ngIf="steps.length > 1" (click)="removeStep(i)" class="btn-icon text-red-400 hover:text-red-600 mt-1">
+            <svg class="icon-sm" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
         </div>
       </div>
     </div>
-
-    <!-- Error -->
-    <div *ngIf="errorMessage" class="alert-error">
-      ⚠️ {{ errorMessage }}
-    </div>
-
-    <!-- Actions -->
+    <div *ngIf="errorMessage" class="alert-error"><svg class="icon-sm flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg> {{ errorMessage }}</div>
     <div class="flex items-center gap-3">
       <button type="button" (click)="router.navigate(['/test-cases'])" class="btn-secondary">Cancel</button>
       <button type="submit" [disabled]="form.invalid || isSaving" class="btn-primary flex items-center gap-2">
-        <span *ngIf="!isSaving">{{ isEditing ? '💾 Update' : '🚀 Create' }} Test Case</span>
-        <span *ngIf="isSaving" class="flex items-center gap-2">
-          <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-          </svg>
-          Saving...
-        </span>
+        <svg *ngIf="!isSaving" class="icon-sm" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span *ngIf="!isSaving">{{ isEditing ? 'Update' : 'Create' }} Test Case</span>
+        <svg *ngIf="isSaving" class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+        <span *ngIf="isSaving">Saving...</span>
       </button>
     </div>
   </form>
