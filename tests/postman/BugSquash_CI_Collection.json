@@ -1,0 +1,335 @@
+{
+  "info": {
+    "name": "BugSquash CI - Complete Test Suite",
+    "_postman_id": "bugsquash-ci-collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Comprehensive API test suite for BugSquash CI QA Platform"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api" },
+    { "key": "authToken", "value": "" },
+    { "key": "testCaseId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "API Health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Healthy status', () => pm.expect(pm.response.json().status).to.eql('healthy'));",
+                  "pm.test('Has timestamp', () => pm.expect(pm.response.json().timestamp).to.exist);",
+                  "pm.test('Has uptime', () => pm.expect(pm.response.json().uptime).to.be.a('number'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register New User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Success is true', () => pm.expect(pm.response.json().success).to.be.true);",
+                  "pm.test('Has token', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.token).to.exist;",
+                  "  pm.collectionVariables.set('authToken', json.token);",
+                  "});",
+                  "pm.test('Has user data', () => {",
+                  "  const user = pm.response.json().user;",
+                  "  pm.expect(user.name).to.eql('Test User');",
+                  "  pm.expect(user.email).to.eql('testuser@bugsquash.com');",
+                  "  pm.expect(user.role).to.eql('qa_engineer');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Test User\", \"email\": \"testuser@bugsquash.com\", \"password\": \"TestPass123\", \"role\": \"qa_engineer\", \"department\": \"QA\"}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has token', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.token).to.exist;",
+                  "  pm.collectionVariables.set('authToken', json.token);",
+                  "});",
+                  "pm.test('Login message', () => pm.expect(pm.response.json().message).to.eql('Login successful'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"testuser@bugsquash.com\", \"password\": \"TestPass123\"}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login - Invalid Credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Success is false', () => pm.expect(pm.response.json().success).to.be.false);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"testuser@bugsquash.com\", \"password\": \"wrongpassword\"}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has user data', () => pm.expect(pm.response.json().data.email).to.exist);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        },
+        {
+          "name": "Unauthorized Access",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 401', () => pm.response.to.have.status(401));",
+                  "pm.test('No token error', () => pm.expect(pm.response.json().error).to.include('No token'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Test Cases",
+      "item": [
+        {
+          "name": "Create Test Case",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Has ID', () => {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.data._id).to.exist;",
+                  "  pm.collectionVariables.set('testCaseId', json.data._id);",
+                  "});",
+                  "pm.test('Correct data', () => {",
+                  "  const data = pm.response.json().data;",
+                  "  pm.expect(data.testId).to.eql('TC-PM-001');",
+                  "  pm.expect(data.priority).to.eql('Critical');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"testId\": \"TC-PM-001\", \"title\": \"Postman Test - Login Verification\", \"description\": \"Automated test created via Postman collection\", \"createdBy\": \"Test User\", \"type\": \"Automated\", \"priority\": \"Critical\", \"tags\": [\"postman\", \"automated\"]}"
+            },
+            "url": { "raw": "{{baseUrl}}/testcases", "host": ["{{baseUrl}}"], "path": ["testcases"] }
+          }
+        },
+        {
+          "name": "Get All Test Cases",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array', () => pm.expect(pm.response.json().data).to.be.an('array'));",
+                  "pm.test('Has pagination', () => pm.expect(pm.response.json().pagination).to.exist);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/testcases", "host": ["{{baseUrl}}"], "path": ["testcases"] }
+          }
+        },
+        {
+          "name": "Get Single Test Case",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Correct test case', () => pm.expect(pm.response.json().data.testId).to.eql('TC-PM-001'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/testcases/{{testCaseId}}", "host": ["{{baseUrl}}"], "path": ["testcases", "{{testCaseId}}"] }
+          }
+        },
+        {
+          "name": "Update Test Case",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Updated status', () => pm.expect(pm.response.json().data.status).to.eql('Active'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"status\": \"Active\", \"assignedTo\": \"Test User\"}"
+            },
+            "url": { "raw": "{{baseUrl}}/testcases/{{testCaseId}}", "host": ["{{baseUrl}}"], "path": ["testcases", "{{testCaseId}}"] }
+          }
+        },
+        {
+          "name": "Add Execution Record",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has execution history', () => {",
+                  "  const history = pm.response.json().data.executionHistory;",
+                  "  pm.expect(history.length).to.be.greaterThan(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"executedBy\": \"Test User\", \"result\": \"Passed\", \"actualResult\": \"Login verification passed via Postman\", \"executionTime\": 2500}"
+            },
+            "url": { "raw": "{{baseUrl}}/testcases/{{testCaseId}}/execute", "host": ["{{baseUrl}}"], "path": ["testcases", "{{testCaseId}}", "execute"] }
+          }
+        },
+        {
+          "name": "Get Metrics",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has summary', () => pm.expect(pm.response.json().data.summary).to.exist);",
+                  "pm.test('Has status breakdown', () => pm.expect(pm.response.json().data.byStatus).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/testcases/metrics/summary", "host": ["{{baseUrl}}"], "path": ["testcases", "metrics", "summary"] }
+          }
+        }
+      ]
+    }
+  ]
+}

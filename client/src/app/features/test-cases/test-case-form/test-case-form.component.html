@@ -1,0 +1,143 @@
+<div class="page-enter space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-dark-800">{{ isEditing ? 'Edit Test Case' : 'New Test Case' }}</h1>
+      <p class="text-sm text-dark-500 mt-1">{{ isEditing ? 'Update test case details' : 'Create a new QA test case' }}</p>
+    </div>
+    <button (click)="router.navigate(['/test-cases'])" class="btn-ghost">← Back</button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="card space-y-4">
+    <div class="skeleton h-8 w-48"></div>
+    <div class="skeleton h-10 w-full"></div>
+    <div class="skeleton h-10 w-full"></div>
+    <div class="skeleton h-20 w-full"></div>
+  </div>
+
+  <!-- Form -->
+  <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- Basic Info -->
+    <div class="card">
+      <h3 class="text-sm font-semibold text-dark-700 mb-4">📋 Basic Information</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="input-label">Test ID *</label>
+          <input type="text" formControlName="testId" class="input-field font-mono" 
+                 placeholder="TC-AUTH-001" [attr.readonly]="isEditing ? true : null">
+          <div *ngIf="form.get('testId')?.invalid && form.get('testId')?.touched" class="input-error">Required</div>
+        </div>
+        <div>
+          <label class="input-label">Created By *</label>
+          <input type="text" formControlName="createdBy" class="input-field" placeholder="Your name">
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <label class="input-label">Title *</label>
+        <input type="text" formControlName="title" class="input-field" placeholder="Verify login functionality">
+        <div *ngIf="form.get('title')?.invalid && form.get('title')?.touched" class="input-error">Required (max 100 chars)</div>
+      </div>
+
+      <div class="mt-4">
+        <label class="input-label">Description *</label>
+        <textarea formControlName="description" rows="3" class="input-field" placeholder="Detailed description of the test case..."></textarea>
+        <div *ngIf="form.get('description')?.invalid && form.get('description')?.touched" class="input-error">Required</div>
+      </div>
+    </div>
+
+    <!-- Classification -->
+    <div class="card">
+      <h3 class="text-sm font-semibold text-dark-700 mb-4">🏷️ Classification</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div>
+          <label class="input-label">Type</label>
+          <select formControlName="type" class="select-field">
+            <option *ngFor="let t of types" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="input-label">Priority</label>
+          <select formControlName="priority" class="select-field">
+            <option *ngFor="let p of priorities" [value]="p">{{ p }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="input-label">Status</label>
+          <select formControlName="status" class="select-field">
+            <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="input-label">Assigned To</label>
+          <input type="text" formControlName="assignedTo" class="input-field" placeholder="Assignee name">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
+        <div>
+          <label class="input-label">Est. Time (min)</label>
+          <input type="number" formControlName="estimatedTime" class="input-field" placeholder="15">
+        </div>
+        <div>
+          <label class="input-label">Defect Count</label>
+          <input type="number" formControlName="defectCount" class="input-field" placeholder="0">
+        </div>
+        <div>
+          <label class="input-label">Tags (comma separated)</label>
+          <input type="text" formControlName="tags" class="input-field" placeholder="auth, login, smoke-test">
+        </div>
+      </div>
+    </div>
+
+    <!-- Test Steps -->
+    <div class="card">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-sm font-semibold text-dark-700">📝 Test Steps</h3>
+        <button type="button" (click)="addStep()" class="btn-secondary text-xs">
+          ➕ Add Step
+        </button>
+      </div>
+
+      <div formArrayName="steps" class="space-y-3">
+        <div *ngFor="let step of steps.controls; let i = index" [formGroupName]="i"
+             class="flex gap-3 items-start p-4 bg-dark-50 rounded-xl animate-slide-up">
+          <div class="w-8 h-8 bg-primary-100 text-primary-700 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">
+            {{ i + 1 }}
+          </div>
+          <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <input type="text" formControlName="action" class="input-field text-sm" placeholder="Action to perform">
+            </div>
+            <div>
+              <input type="text" formControlName="expectedResult" class="input-field text-sm" placeholder="Expected result">
+            </div>
+          </div>
+          <button type="button" *ngIf="steps.length > 1" (click)="removeStep(i)" 
+                  class="btn-icon text-red-400 hover:text-red-600 mt-1">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="errorMessage" class="alert-error">
+      ⚠️ {{ errorMessage }}
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-3">
+      <button type="button" (click)="router.navigate(['/test-cases'])" class="btn-secondary">Cancel</button>
+      <button type="submit" [disabled]="form.invalid || isSaving" class="btn-primary flex items-center gap-2">
+        <span *ngIf="!isSaving">{{ isEditing ? '💾 Update' : '🚀 Create' }} Test Case</span>
+        <span *ngIf="isSaving" class="flex items-center gap-2">
+          <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+          </svg>
+          Saving...
+        </span>
+      </button>
+    </div>
+  </form>
+</div>

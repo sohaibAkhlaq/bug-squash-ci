@@ -1,0 +1,112 @@
+{
+  "info": {
+    "_postman_id": "39ef080e-61e1-4498-b171-9b03ebaeb6b1",
+    "name": "BugSquash",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54144994",
+    "_collection_link": "https://go.postman.co/collection/54144994-39ef080e-61e1-4498-b171-9b03ebaeb6b1?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "healthcheck",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "create_testCase",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"testId\": \"TC-LOGIN-001\",\r\n    \"title\": \"Verify User Login with Valid Credentials\",\r\n    \"description\": \"Test that user can login successfully with correct email and password\",\r\n    \"steps\": [\r\n        {\r\n            \"stepNumber\": 1,\r\n            \"action\": \"Navigate to login page\",\r\n            \"expectedResult\": \"Login form is displayed\"\r\n        },\r\n        {\r\n            \"stepNumber\": 2,\r\n            \"action\": \"Enter valid email and password\",\r\n            \"expectedResult\": \"Input fields accept values\"\r\n        },\r\n        {\r\n            \"stepNumber\": 3,\r\n            \"action\": \"Click Login button\",\r\n            \"expectedResult\": \"User is redirected to dashboard\"\r\n        }\r\n    ],\r\n    \"type\": \"Manual\",\r\n    \"priority\": \"Critical\",\r\n    \"createdBy\": \"Sohaib Akhlaq\",\r\n    \"tags\": [\"login\", \"authentication\", \"smoke-test\"]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/testcases",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "testcases"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "single_tc",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "addExec",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "updateTestcase",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "createnewtestcase2",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "createTestCase3",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "deleteTestCase",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "testSummary",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
+}

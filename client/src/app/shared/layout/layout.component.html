@@ -1,0 +1,97 @@
+<div class="min-h-screen bg-dark-50 flex">
+  <!-- Sidebar -->
+  <aside 
+    class="fixed inset-y-0 left-0 z-30 bg-white border-r border-dark-100 shadow-sm transition-all duration-300 flex flex-col"
+    [class.w-64]="sidebarOpen" 
+    [class.w-20]="!sidebarOpen"
+    [class.-translate-x-full]="!showMobileMenu"
+    [class.translate-x-0]="showMobileMenu || true">
+    
+    <!-- Logo -->
+    <div class="flex items-center gap-3 px-5 h-16 border-b border-dark-100">
+      <div class="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-neon flex-shrink-0">
+        BQ
+      </div>
+      <div *ngIf="sidebarOpen" class="overflow-hidden">
+        <h1 class="font-bold text-dark-800 text-sm leading-tight">BugSquash CI</h1>
+        <p class="text-[10px] text-dark-400 font-medium">QA Platform</p>
+      </div>
+    </div>
+
+    <!-- Nav Items -->
+    <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
+      <a *ngFor="let item of navItems"
+         [routerLink]="item.path"
+         [class]="isActive(item.path) ? 'sidebar-link-active' : 'sidebar-link'"
+         [title]="item.label">
+        <span class="text-lg flex-shrink-0">{{ item.icon }}</span>
+        <span *ngIf="sidebarOpen" class="truncate">{{ item.label }}</span>
+      </a>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="p-3 border-t border-dark-100">
+      <button (click)="toggleSidebar()" 
+              class="sidebar-link w-full justify-center" title="Toggle Sidebar">
+        <span *ngIf="sidebarOpen">◀</span>
+        <span *ngIf="!sidebarOpen">▶</span>
+        <span *ngIf="sidebarOpen">Collapse</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col transition-all duration-300"
+       [class.ml-64]="sidebarOpen" 
+       [class.ml-20]="!sidebarOpen">
+    
+    <!-- Top Bar -->
+    <header class="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-dark-100 h-16 flex items-center justify-between px-6">
+      <!-- Mobile Menu Toggle -->
+      <button (click)="toggleMobileMenu()" 
+              class="lg:hidden btn-icon">
+        ☰
+      </button>
+
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-dark-400 hidden sm:inline">Welcome back,</span>
+        <span class="text-sm font-semibold text-dark-800">{{ currentUser?.name }}</span>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Role Badge -->
+        <span class="badge badge-info hidden sm:inline-flex" *ngIf="currentUser">
+          {{ authService.getRoleLabel(currentUser.role) }}
+        </span>
+        
+        <!-- User Avatar -->
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
+            {{ currentUser?.name?.charAt(0)?.toUpperCase() }}
+          </div>
+          <button (click)="logout()" class="btn-ghost text-xs text-dark-500 hover:text-red-500" title="Logout">
+            🚪 Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="flex-1 p-6 animate-fade-in">
+      <router-outlet></router-outlet>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-dark-100 bg-white py-3 px-6">
+      <div class="flex items-center justify-between text-xs text-dark-400">
+        <span>© 2024 BugSquash CI — QA Test Management</span>
+        <span>v1.0.0</span>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<!-- Mobile Overlay -->
+<div *ngIf="showMobileMenu" 
+     (click)="toggleMobileMenu()" 
+     class="fixed inset-0 bg-black/30 z-20 lg:hidden backdrop-blur-sm"></div>
