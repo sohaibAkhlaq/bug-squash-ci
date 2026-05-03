@@ -110,7 +110,7 @@ graph TD
 ## 👤 Author
 
 **Sohaib Akhlaq**  
-*Full-Stack Engineer | QA Automation Specialist*
+*Full-Stack Engineer *
 
 - GitHub: [@sohaibAkhlaq](https://github.com/sohaibAkhlaq)
 - LinkedIn: [Sohaib Akhlaq](https://linkedin.com/in/sohaibakhlaq-fast)
