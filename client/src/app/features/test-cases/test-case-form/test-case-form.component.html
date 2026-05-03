@@ -13,7 +13,19 @@
         <div><label class="input-label">Test ID *</label><input type="text" formControlName="testId" class="input-field font-mono" placeholder="TC-AUTH-001" [attr.readonly]="isEditing ? true : null"><div *ngIf="form.get('testId')?.invalid && form.get('testId')?.touched" class="input-error">Required</div></div>
         <div><label class="input-label">Created By *</label><input type="text" formControlName="createdBy" class="input-field" placeholder="Your name"></div>
       </div>
-      <div class="mt-4"><label class="input-label">Title *</label><input type="text" formControlName="title" class="input-field" placeholder="Verify login functionality"><div *ngIf="form.get('title')?.invalid && form.get('title')?.touched" class="input-error">Required (max 100 chars)</div></div>
+      <div class="mt-4">
+        <label class="input-label flex items-center justify-between">
+          Title *
+          <button type="button" (click)="generateWithAi()" [disabled]="isGeneratingAi"
+                  class="text-xs flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:from-violet-500 hover:to-indigo-500 transition-all shadow-sm hover:shadow-md disabled:opacity-50">
+            <svg *ngIf="!isGeneratingAi" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.456-2.455L18 2.25l.259 1.036a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.456 2.455zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/></svg>
+            <svg *ngIf="isGeneratingAi" class="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+            {{ isGeneratingAi ? 'Thinking...' : 'AI Magic' }}
+          </button>
+        </label>
+        <input type="text" formControlName="title" class="input-field" placeholder="e.g. User login with OAuth">
+        <div *ngIf="form.get('title')?.invalid && form.get('title')?.touched" class="input-error">Required (max 100 chars)</div>
+      </div>
       <div class="mt-4"><label class="input-label">Description *</label><textarea formControlName="description" rows="3" class="input-field" placeholder="Detailed description of the test case..."></textarea><div *ngIf="form.get('description')?.invalid && form.get('description')?.touched" class="input-error">Required</div></div>
     </div>
     <div class="card-3d">

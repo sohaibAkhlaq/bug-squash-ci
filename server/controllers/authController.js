@@ -4,6 +4,7 @@ const User = require('../models/User');
 // @route   POST /api/auth/register
 // @access  Public
 const register = async (req, res) => {
+    console.log(`[DEBUG] Registration attempt for email: ${req.body.email}`);
     try {
         const { name, email, password, role, title, department } = req.body;
         
@@ -39,16 +40,21 @@ const register = async (req, res) => {
 // @access  Public
 const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        let { email, password } = req.body;
         
         if (!email || !password) {
             return res.status(400).json({ success: false, error: 'Email and password are required' });
         }
+
+        email = email.trim().toLowerCase();
+        password = password.trim();
         
         // Find user with password field
         const user = await User.findOne({ email }).select('+password');
         
+        console.log(`[DEBUG] Login attempt for: ${email}`);
         if (!user) {
+            console.log(`[DEBUG] User not found for: ${email}`);
             return res.status(401).json({ success: false, error: 'Invalid credentials' });
         }
         
@@ -67,6 +73,7 @@ const login = async (req, res) => {
         
         // Verify password
         const isPasswordCorrect = await user.comparePassword(password);
+        console.log(`[DEBUG] Password correct for ${email}: ${isPasswordCorrect}`);
         
         if (!isPasswordCorrect) {
             await user.incrementLoginAttempts();

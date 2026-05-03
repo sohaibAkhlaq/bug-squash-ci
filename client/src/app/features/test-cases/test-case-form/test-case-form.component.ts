@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TestCaseService } from '../../../core/services/test-case.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { TestCase } from '../../../core/models/test-case.model';
+import { AiService } from '../../../core/services/ai.service';
 
 @Component({
   selector: 'app-test-case-form',
@@ -14,6 +15,7 @@ export class TestCaseFormComponent implements OnInit {
   isEditing = false;
   isLoading = false;
   isSaving = false;
+  isGeneratingAi = false;
   errorMessage = '';
   testCaseId: string | null = null;
 
@@ -26,7 +28,8 @@ export class TestCaseFormComponent implements OnInit {
     private route: ActivatedRoute,
     public router: Router,
     private testCaseService: TestCaseService,
-    private authService: AuthService
+    private authService: AuthService,
+    private aiService: AiService
   ) {
     const user = this.authService.getCurrentUser();
     this.form = this.fb.group({
@@ -140,6 +143,45 @@ export class TestCaseFormComponent implements OnInit {
       error: (error) => {
         this.errorMessage = error.message;
         this.isSaving = false;
+      }
+    });
+  }
+
+  generateWithAi(): void {
+    const title = this.form.get('title')?.value;
+    if (!title) {
+      this.errorMessage = 'Please enter a brief title or description first to help the AI generate details.';
+      return;
+    }
+
+    this.isGeneratingAi = true;
+    this.errorMessage = '';
+
+    this.aiService.generateTestCase(title).subscribe({
+      next: (response) => {
+        const aiTc = response.data;
+        this.form.patchValue({
+          title: aiTc.title,
+          description: aiTc.description,
+          priority: aiTc.priority,
+          type: aiTc.type
+        });
+
+        // Clear and replace steps
+        while (this.steps.length) { this.steps.removeAt(0); }
+        aiTc.steps.forEach((step: any) => {
+          this.steps.push(this.fb.group({
+            stepNumber: [step.stepNumber],
+            action: [step.action, Validators.required],
+            expectedResult: [step.expectedResult, Validators.required]
+          }));
+        });
+
+        this.isGeneratingAi = false;
+      },
+      error: (err) => {
+        this.errorMessage = 'AI generation failed. Please try again or fill manually.';
+        this.isGeneratingAi = false;
       }
     });
   }

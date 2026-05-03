@@ -14,23 +14,23 @@
         <div>
           <label class="input-label text-slate-300">Full Name</label>
           <div class="relative"><svg class="icon-sm absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
-          <input type="text" formControlName="name" placeholder="John Doe" class="input-field pl-11 bg-white/10 border-white/15 text-white placeholder:text-slate-500 focus:bg-white/15"></div>
+          <input type="text" formControlName="name" placeholder="John Doe" class="input-field pl-11 bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus:ring-primary-500/30"></div>
           <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="input-error">Name must be at least 2 characters</div>
         </div>
         <div>
           <label class="input-label text-slate-300">Email</label>
           <div class="relative"><svg class="icon-sm absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
-          <input type="email" formControlName="email" placeholder="you@example.com" class="input-field pl-11 bg-white/10 border-white/15 text-white placeholder:text-slate-500 focus:bg-white/15"></div>
+          <input type="email" formControlName="email" placeholder="you@example.com" class="input-field pl-11 bg-white border-slate-200 text-slate-900 placeholder:text-slate-400 focus:ring-primary-500/30"></div>
           <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="input-error">Please enter a valid email</div>
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <div><label class="input-label text-slate-300">Role</label><select formControlName="role" class="select-field bg-white/10 border-white/15 text-white focus:bg-white/15"><option *ngFor="let r of roles" [value]="r.value" class="text-slate-800">{{ r.label }}</option></select></div>
-          <div><label class="input-label text-slate-300">Department</label><select formControlName="department" class="select-field bg-white/10 border-white/15 text-white focus:bg-white/15"><option *ngFor="let d of departments" [value]="d" class="text-slate-800">{{ d }}</option></select></div>
+          <div><label class="input-label text-slate-300">Role</label><select formControlName="role" class="select-field bg-white border-slate-200 text-slate-900"><option *ngFor="let r of roles" [value]="r.value" class="text-slate-800">{{ r.label }}</option></select></div>
+          <div><label class="input-label text-slate-300">Department</label><select formControlName="department" class="select-field bg-white border-slate-200 text-slate-900"><option *ngFor="let d of departments" [value]="d" class="text-slate-800">{{ d }}</option></select></div>
         </div>
-        <div><label class="input-label text-slate-300">Job Title (optional)</label><input type="text" formControlName="title" placeholder="QA Engineer" class="input-field bg-white/10 border-white/15 text-white placeholder:text-slate-500 focus:bg-white/15"></div>
-        <div><label class="input-label text-slate-300">Password</label><input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Min 6 characters" class="input-field bg-white/10 border-white/15 text-white placeholder:text-slate-500 focus:bg-white/15">
+        <div><label class="input-label text-slate-300">Job Title (optional)</label><input type="text" formControlName="title" placeholder="QA Engineer" class="input-field bg-white border-slate-200 text-slate-900 placeholder:text-slate-400"></div>
+        <div><label class="input-label text-slate-300">Password</label><input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Min 6 characters" class="input-field bg-white border-slate-200 text-slate-900 placeholder:text-slate-400">
           <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="input-error">Password must be at least 6 characters</div></div>
-        <div><label class="input-label text-slate-300">Confirm Password</label><input type="password" formControlName="confirmPassword" placeholder="Re-enter password" class="input-field bg-white/10 border-white/15 text-white placeholder:text-slate-500 focus:bg-white/15">
+        <div><label class="input-label text-slate-300">Confirm Password</label><input type="password" formControlName="confirmPassword" placeholder="Re-enter password" class="input-field bg-white border-slate-200 text-slate-900 placeholder:text-slate-400">
           <div *ngIf="registerForm.get('confirmPassword')?.errors?.['mismatch'] && registerForm.get('confirmPassword')?.touched" class="input-error">Passwords do not match</div></div>
         <div *ngIf="errorMessage" class="alert-error bg-red-500/10 border-red-500/30"><svg class="icon-sm text-red-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg><p class="text-sm text-red-300">{{ errorMessage }}</p></div>
         <button type="submit" [disabled]="registerForm.invalid || isLoading" class="w-full btn-primary py-3.5 text-base flex items-center justify-center gap-2">

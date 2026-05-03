@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema(
     {
@@ -53,7 +53,14 @@ const userSchema = new mongoose.Schema(
             default: 0,
             max: [5, 'Account locked due to too many failed attempts']
         },
-        lockUntil: Date,
+        lockUntil: {
+            type: Date
+        },
+        googleId: {
+            type: String,
+            unique: true,
+            sparse: true
+        },
         // Password Reset
         passwordResetToken: String,
         passwordResetExpires: Date,
@@ -78,7 +85,6 @@ const userSchema = new mongoose.Schema(
 // ============================================
 // INDEXES (For Performance)
 // ============================================
-userSchema.index({ email: 1 }, { unique: true });
 userSchema.index({ role: 1 });
 userSchema.index({ isActive: 1 });
 

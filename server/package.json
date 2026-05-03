@@ -10,21 +10,33 @@
     "seed": "node seed.js",
     "test": "echo \"Running tests...\" && exit 0"
   },
-  "keywords": ["qa", "testing", "management", "mean-stack"],
+  "keywords": [
+    "qa",
+    "testing",
+    "management",
+    "mean-stack"
+  ],
   "author": "Sohaib Akhlaq",
   "license": "MIT",
   "type": "commonjs",
   "dependencies": {
-    "bcrypt": "^6.0.0",
+    "@google/generative-ai": "^0.24.1",
+    "bcryptjs": "^3.0.3",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^7.5.0",
+    "express-session": "^1.19.0",
+    "express-validator": "^7.3.2",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.4.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "nodemailer": "^8.0.7",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TestCaseService } from '../../../core/services/test-case.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { TestCase } from '../../../core/models/test-case.model';
+import { ReportService } from '../../../core/services/report.service';
 
 @Component({
   selector: 'app-test-case-list',
@@ -16,7 +17,8 @@ export class TestCaseListComponent implements OnInit {
 
   constructor(
     private testCaseService: TestCaseService,
-    public authService: AuthService
+    public authService: AuthService,
+    private reportService: ReportService
   ) {}
 
   ngOnInit(): void { this.loadTestCases(); }
@@ -69,5 +71,9 @@ export class TestCaseListComponent implements OnInit {
       'Active': 'badge-success', 'Draft': 'badge-neutral', 'Deprecated': 'badge-danger', 'Under Review': 'badge-purple'
     };
     return map[status] || 'badge-neutral';
+  }
+
+  exportToPDF(): void {
+    this.reportService.exportTestCasesToPDF(this.testCases, 'QA Test Case Inventory');
   }
 }

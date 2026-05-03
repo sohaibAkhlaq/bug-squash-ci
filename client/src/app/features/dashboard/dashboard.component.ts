@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { TestCaseService } from '../../core/services/test-case.service';
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/models/user.model';
+import { SocketService } from '../../core/services/socket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,14 +14,29 @@ export class DashboardComponent implements OnInit {
   isLoading = true;
   currentUser: User | null = null;
 
+  private socketSub!: Subscription;
+
   constructor(
     private testCaseService: TestCaseService,
-    public authService: AuthService
+    public authService: AuthService,
+    private socketService: SocketService
   ) {}
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => this.currentUser = user);
     this.loadMetrics();
+    
+    // Real-time listener
+    this.socketSub = this.socketService.on('statsUpdated').subscribe(() => {
+      console.log('🔄 Stats updated via real-time event');
+      this.loadMetrics();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.socketSub) {
+      this.socketSub.unsubscribe();
+    }
   }
 
   loadMetrics(): void {

@@ -102,7 +102,6 @@ const testCaseSchema = new mongoose.Schema(
 // LEARNING MOMENT: Indexing for Performance
 // Create index on fields we search frequently
 // This is how we achieve "40% faster queries" on resume!
-testCaseSchema.index({ testId: 1 }); // 1 = ascending order
 testCaseSchema.index({ status: 1 });
 testCaseSchema.index({ priority: 1 });
 testCaseSchema.index({ tags: 1 });

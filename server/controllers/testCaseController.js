@@ -1,4 +1,5 @@
 const TestCase = require('../models/TestCase');
+const emailService = require('../services/emailService');
 
 // @desc    Get all test cases with filtering, sorting, pagination
 // @route   GET /api/testcases
@@ -95,6 +96,12 @@ const createTestCase = async (req, res) => {
         }
         
         const testCase = await TestCase.create(req.body);
+        
+        // Real-time update
+        const io = req.app.get('io');
+        io.emit('testCaseCreated', testCase);
+        io.emit('statsUpdated');
+        
         res.status(201).json({ success: true, data: testCase });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -113,6 +120,17 @@ const updateTestCase = async (req, res) => {
         if (!testCase) {
             return res.status(404).json({ success: false, error: 'Test case not found' });
         }
+        
+        // Real-time update
+        const io = req.app.get('io');
+        io.emit('testCaseUpdated', testCase);
+        io.emit('statsUpdated');
+        
+        // Email notification (Industry level feature)
+        if (req.user && req.user.email) {
+            emailService.sendTestNotification(req.user.email, testCase);
+        }
+        
         res.status(200).json({ success: true, data: testCase });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
@@ -129,6 +147,12 @@ const deleteTestCase = async (req, res) => {
             return res.status(404).json({ success: false, error: 'Test case not found' });
         }
         await testCase.deleteOne();
+        
+        // Real-time update
+        const io = req.app.get('io');
+        io.emit('testCaseDeleted', req.params.id);
+        io.emit('statsUpdated');
+        
         res.status(200).json({ success: true, data: {} });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
